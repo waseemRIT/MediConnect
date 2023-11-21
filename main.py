@@ -73,11 +73,11 @@ TABLES = {
 
 
 class DatabaseManager:
-    def __init__(self, host, user, password, db_name):
+    def __init__(self, host, user, password):
         self.host = host
         self.user = user
         self.password = password
-        self.db_name = db_name
+        self.db_name = "MediConnect"  # Set the database name here
         self.connection = None
 
     def connect(self):
@@ -154,12 +154,8 @@ class MediConnectApp:
         self.password_entry = Entry(connection_frame, show="*")
         self.password_entry.grid(row=2, column=1, sticky="ew")
 
-        Label(connection_frame, text="Database:").grid(row=3, column=0, sticky="w")
-        self.db_name_entry = Entry(connection_frame)
-        self.db_name_entry.grid(row=3, column=1, sticky="ew")
-
         connect_button = Button(connection_frame, text="Connect", command=self.connect_to_database)
-        connect_button.grid(row=4, column=1, sticky="ew", pady=5)
+        connect_button.grid(row=3, column=1, sticky="ew", pady=5)
 
         # Result area
         self.query_result = scrolledtext.ScrolledText(self.master, height=15)
@@ -407,9 +403,8 @@ class MediConnectApp:
         host = self.host_entry.get()
         user = self.user_entry.get()
         password = self.password_entry.get()
-        db_name = self.db_name_entry.get()
 
-        self.db_manager = DatabaseManager(host, user, password, db_name)
+        self.db_manager = DatabaseManager(host, user, password)
         self.db_manager.connect()
 
     def dummy_command(self):
