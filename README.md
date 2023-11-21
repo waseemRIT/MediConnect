@@ -37,6 +37,12 @@ Enter your MySQL server password and connect to the database. Once connected, yo
 
 - 📊 **View All Records**: Retrieves and displays records from the selected table.
 - ➕ **Add New Record**: Opens a form to insert new data into the selected table.
+- 📝 **Update Existing Record**: Easily modify the details of existing entries.
+- 🗑️ **Delete Record**: Remove obsolete information from the database securely.
+- 🔍 **Search and Filter**: Find specific data points using advanced search options.
+- 📈 **Generate Reports**: Compile data into structured reports for analysis and sharing.
+- 🔄 **Data Synchronization**: Ensure all data remains up to date across the system.
+
 
 Ensure you have the necessary privileges on the MySQL server to perform the operations.
 
