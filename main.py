@@ -167,15 +167,16 @@ class MediConnectApp:
         Button(button_frame, text="View All Patients", command=self.view_all_patients).pack(side="left", padx=5)
         Button(button_frame, text="Add New Patient", command=self.add_new_patient_form).pack(side="left", padx=5)
         Button(button_frame, text="View All Providers", command=self.view_all_providers).pack(side="left", padx=5)
-        Button(button_frame, text="Add New Provider", command=self.add_new_provider).pack(side="left", padx=5)
+        Button(button_frame, text="Add New Provider", command=self.add_new_provider_form).pack(side="left", padx=5)
         Button(button_frame, text="View All Appointments", command=self.view_all_appointments).pack(side="left", padx=5)
-        Button(button_frame, text="Add New Appointment", command=self.add_new_appointment).pack(side="left", padx=5)
+        Button(button_frame, text="Add New Appointment", command=self.add_new_appointment_form).pack(side="left",
+                                                                                                     padx=5)
         Button(button_frame, text="View All Treatments", command=self.view_all_treatments).pack(side="left", padx=5)
-        Button(button_frame, text="Add New Treatment", command=self.add_new_treatment).pack(side="left", padx=5)
+        Button(button_frame, text="Add New Treatment", command=self.add_new_treatment_form).pack(side="left", padx=5)
         Button(button_frame, text="View All Billing Records", command=self.view_all_billing_records).pack(side="left",
                                                                                                           padx=5)
-        Button(button_frame, text="Add New Billing Record", command=self.add_new_billing_record).pack(side="left",
-                                                                                                      padx=5)
+        Button(button_frame, text="Add New Billing Record", command=self.add_new_billing_record_form).pack(side="left",
+                                                                                                           padx=5)
 
     # Define the view functions to execute the SELECT statements and display the results
     def view_all_patients(self):
@@ -228,7 +229,6 @@ class MediConnectApp:
         messagebox.showinfo("Success", "New patient added successfully.")
 
     def add_new_provider_form(self):
-        # Create the provider form and save the entries as attributes of the instance
         self.new_provider_window = tk.Toplevel(self.master)
         self.new_provider_window.title("Add New Provider")
 
@@ -247,23 +247,27 @@ class MediConnectApp:
         Button(self.new_provider_window, text="Submit", command=self.add_new_provider).grid(row=3, column=1)
 
     def add_new_provider(self):
-        # Get the values from the entries and insert into the database
-        name = self.provider_name_entry.get()
-        specialty = self.provider_specialty_entry.get()
-        contact_info = self.provider_contact_entry.get()
+        # Ensure the attributes were created
+        if hasattr(self, 'provider_name_entry') and hasattr(self, 'provider_specialty_entry') and hasattr(self, 'provider_contact_entry'):
+            name = self.provider_name_entry.get()
+            specialty = self.provider_specialty_entry.get()
+            contact_info = self.provider_contact_entry.get()
 
-        if not all([name, specialty, contact_info]):  # Simple validation to ensure all fields are filled
-            messagebox.showerror("Error", "All fields are required.")
-            return
+            # You may want to add more comprehensive validation here
+            if not name or not specialty:
+                messagebox.showerror("Error", "Name and specialty are required.")
+                return
 
-        insert_query = "INSERT INTO provider (name, specialty, contact_info) VALUES (%s, %s, %s)"
-        try:
-            self.db_manager.execute_query(insert_query, (name, specialty, contact_info))
-            messagebox.showinfo("Success", "New provider added successfully.")
-        except Exception as e:
-            messagebox.showerror("Error", f"An error occurred: {e}")
-        finally:
-            self.new_provider_window.destroy()  # Ensure the window is destroyed even if there's an error
+            insert_query = "INSERT INTO provider (name, specialty, contact_info) VALUES (%s, %s, %s)"
+            try:
+                self.db_manager.execute_query(insert_query, (name, specialty, contact_info))
+                messagebox.showinfo("Success", "New provider added successfully.")
+            except Exception as e:
+                messagebox.showerror("Error", f"An error occurred: {e}")
+            finally:
+                self.new_provider_window.destroy()
+        else:
+            messagebox.showerror("Error", "Form entries not found.")
 
     # Add new appointment form
     def add_new_appointment_form(self):
