@@ -71,6 +71,7 @@ TABLES = {
     )
 }
 
+
 class DatabaseManager:
     def __init__(self, host, user, password, db_name):
         self.host = host
@@ -124,6 +125,7 @@ class DatabaseManager:
         if self.connection and self.connection.is_connected():
             self.connection.close()
 
+
 class MediConnectApp:
     def __init__(self, master):
         self.master = master
@@ -175,7 +177,7 @@ class MediConnectApp:
         Button(button_frame, text="View All Treatments", command=self.view_all_treatments).pack(side="left", padx=5)
         Button(button_frame, text="Add New Treatment", command=self.add_new_treatment).pack(side="left", padx=5)
         Button(button_frame, text="View All Billing Records", command=self.view_all_billing_records).pack(side="left",
-                                                                                          padx=5)
+                                                                                                          padx=5)
         Button(button_frame, text="Add New Billing Record", command=self.add_new_billing_record).pack(side="left",
                                                                                                       padx=5)
 
@@ -229,17 +231,158 @@ class MediConnectApp:
 
         messagebox.showinfo("Success", "New patient added successfully.")
 
+    def add_new_provider_form(self):
+        self.new_provider_window = tk.Toplevel(self.master)
+        self.new_provider_window.title("Add New Provider")
+
+        Label(self.new_provider_window, text="Name:").grid(row=0, column=0)
+        self.provider_name_entry = Entry(self.new_provider_window)
+        self.provider_name_entry.grid(row=0, column=1)
+
+        Label(self.new_provider_window, text="Specialty:").grid(row=1, column=0)
+        self.provider_specialty_entry = Entry(self.new_provider_window)
+        self.provider_specialty_entry.grid(row=1, column=1)
+
+        Label(self.new_provider_window, text="Contact Info:").grid(row=2, column=0)
+        self.provider_contact_entry = Entry(self.new_provider_window)
+        self.provider_contact_entry.grid(row=2, column=1)
+
+        Button(self.new_provider_window, text="Submit", command=self.add_new_provider).grid(row=3, column=1)
+
     def add_new_provider(self):
-        messagebox.showinfo("Info", "Add new provider functionality not implemented.")
+        name = self.provider_name_entry.get()
+        specialty = self.provider_specialty_entry.get()
+        contact_info = self.provider_contact_entry.get()
+
+        insert_query = "INSERT INTO provider (name, specialty, contact_info) VALUES (%s, %s, %s)"
+        self.db_manager.execute_query(insert_query, (name, specialty, contact_info))
+
+        self.new_provider_window.destroy()
+        messagebox.showinfo("Success", "New provider added successfully.")
+
+    # Add new appointment form
+    def add_new_appointment_form(self):
+        self.new_appointment_window = tk.Toplevel(self.master)
+        self.new_appointment_window.title("Add New Appointment")
+
+        Label(self.new_appointment_window, text="Patient ID:").grid(row=0, column=0)
+        self.appointment_patient_id_entry = Entry(self.new_appointment_window)
+        self.appointment_patient_id_entry.grid(row=0, column=1)
+
+        Label(self.new_appointment_window, text="Provider ID:").grid(row=1, column=0)
+        self.appointment_provider_id_entry = Entry(self.new_appointment_window)
+        self.appointment_provider_id_entry.grid(row=1, column=1)
+
+        Label(self.new_appointment_window, text="Appointment Date (YYYY-MM-DD HH:MM:SS):").grid(row=2, column=0)
+        self.appointment_date_entry = Entry(self.new_appointment_window)
+        self.appointment_date_entry.grid(row=2, column=1)
+
+        Label(self.new_appointment_window, text="Status:").grid(row=3, column=0)
+        self.appointment_status_entry = Entry(self.new_appointment_window)
+        self.appointment_status_entry.grid(row=3, column=1)
+
+        Button(self.new_appointment_window, text="Submit", command=self.add_new_appointment).grid(row=4, column=1)
 
     def add_new_appointment(self):
-        messagebox.showinfo("Info", "Add new appointment functionality not implemented.")
+        patient_id = self.appointment_patient_id_entry.get()
+        provider_id = self.appointment_provider_id_entry.get()
+        appointment_date = self.appointment_date_entry.get()
+        status = self.appointment_status_entry.get()
+
+        insert_query = """
+        INSERT INTO appointment (patient_id, provider_id, appointment_date, status) 
+        VALUES (%s, %s, %s, %s)
+        """
+        self.db_manager.execute_query(insert_query, (patient_id, provider_id, appointment_date, status))
+
+        self.new_appointment_window.destroy()
+        messagebox.showinfo("Success", "New appointment added successfully.")
+
+    def add_new_treatment_form(self):
+        self.new_treatment_window = tk.Toplevel(self.master)
+        self.new_treatment_window.title("Add New Treatment")
+
+        Label(self.new_treatment_window, text="Patient ID:").grid(row=0, column=0)
+        self.treatment_patient_id_entry = Entry(self.new_treatment_window)
+        self.treatment_patient_id_entry.grid(row=0, column=1)
+
+        Label(self.new_treatment_window, text="Provider ID:").grid(row=1, column=0)
+        self.treatment_provider_id_entry = Entry(self.new_treatment_window)
+        self.treatment_provider_id_entry.grid(row=1, column=1)
+
+        Label(self.new_treatment_window, text="Description:").grid(row=2, column=0)
+        self.treatment_description_entry = Entry(self.new_treatment_window)
+        self.treatment_description_entry.grid(row=2, column=1)
+
+        Label(self.new_treatment_window, text="Start Date (YYYY-MM-DD):").grid(row=3, column=0)
+        self.treatment_start_date_entry = Entry(self.new_treatment_window)
+        self.treatment_start_date_entry.grid(row=3, column=1)
+
+        Label(self.new_treatment_window, text="End Date (YYYY-MM-DD):").grid(row=4, column=0)
+        self.treatment_end_date_entry = Entry(self.new_treatment_window)
+        self.treatment_end_date_entry.grid(row=4, column=1)
+
+        Label(self.new_treatment_window, text="Outcome Notes:").grid(row=5, column=0)
+        self.treatment_outcome_notes_entry = Entry(self.new_treatment_window)
+        self.treatment_outcome_notes_entry.grid(row=5, column=1)
+
+        Button(self.new_treatment_window, text="Submit", command=self.add_new_treatment).grid(row=6, column=1)
 
     def add_new_treatment(self):
-        messagebox.showinfo("Info", "Add new treatment functionality not implemented.")
+        patient_id = self.treatment_patient_id_entry.get()
+        provider_id = self.treatment_provider_id_entry.get()
+        description = self.treatment_description_entry.get()
+        start_date = self.treatment_start_date_entry.get()
+        end_date = self.treatment_end_date_entry.get()
+        outcome_notes = self.treatment_outcome_notes_entry.get()
+
+        insert_query = """
+        INSERT INTO treatment (patient_id, provider_id, description, start_date, end_date, outcome_notes) 
+        VALUES (%s, %s, %s, %s, %s, %s)
+        """
+        self.db_manager.execute_query(insert_query,
+                                      (patient_id, provider_id, description, start_date, end_date, outcome_notes))
+
+        self.new_treatment_window.destroy()
+        messagebox.showinfo("Success", "New treatment record added successfully.")
+
+    # Add new billing record form
+    def add_new_billing_record_form(self):
+        self.new_billing_record_window = tk.Toplevel(self.master)
+        self.new_billing_record_window.title("Add New Billing Record")
+
+        Label(self.new_billing_record_window, text="Patient ID:").grid(row=0, column=0)
+        self.billing_patient_id_entry = Entry(self.new_billing_record_window)
+        self.billing_patient_id_entry.grid(row=0, column=1)
+
+        Label(self.new_billing_record_window, text="Date (YYYY-MM-DD):").grid(row=1, column=0)
+        self.billing_date_entry = Entry(self.new_billing_record_window)
+        self.billing_date_entry.grid(row=1, column=1)
+
+        Label(self.new_billing_record_window, text="Total Cost:").grid(row=2, column=0)
+        self.billing_total_cost_entry = Entry(self.new_billing_record_window)
+        self.billing_total_cost_entry.grid(row=2, column=1)
+
+        Label(self.new_billing_record_window, text="Payment Status:").grid(row=3, column=0)
+        self.billing_payment_status_entry = Entry(self.new_billing_record_window)
+        self.billing_payment_status_entry.grid(row=3, column=1)
+
+        Button(self.new_billing_record_window, text="Submit", command=self.add_new_billing_record).grid(row=4, column=1)
 
     def add_new_billing_record(self):
-        messagebox.showinfo("Info", "Add new billing record functionality not implemented.")
+        patient_id = self.billing_patient_id_entry.get()
+        date = self.billing_date_entry.get()
+        total_cost = self.billing_total_cost_entry.get()
+        payment_status = self.billing_payment_status_entry.get()
+
+        insert_query = """
+        INSERT INTO billing_record (patient_id, date, total_cost, payment_status) 
+        VALUES (%s, %s, %s, %s)
+        """
+        self.db_manager.execute_query(insert_query, (patient_id, date, total_cost, payment_status))
+
+        self.new_billing_record_window.destroy()
+        messagebox.showinfo("Success", "New billing record added successfully.")
 
     # Utility function to execute a query and display the results in the scrolled text area
     def execute_and_display_query(self, query):
@@ -250,9 +393,6 @@ class MediConnectApp:
                 self.query_result.insert(tk.END, f"{record}\n")
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred while executing the query: {e}")
-
-
-
 
     def connect_to_database(self):
         host = self.host_entry.get()
@@ -271,11 +411,13 @@ class MediConnectApp:
             self.db_manager.close()
         self.master.destroy()
 
+
 def main():
     root = tk.Tk()
     app = MediConnectApp(root)
     root.protocol("WM_DELETE_WINDOW", app.on_closing)
     root.mainloop()
+
 
 if __name__ == "__main__":
     main()
