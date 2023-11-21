@@ -232,6 +232,7 @@ class MediConnectApp:
         messagebox.showinfo("Success", "New patient added successfully.")
 
     def add_new_provider_form(self):
+        # Create the provider form and save the entries as attributes of the instance
         self.new_provider_window = tk.Toplevel(self.master)
         self.new_provider_window.title("Add New Provider")
 
@@ -250,15 +251,23 @@ class MediConnectApp:
         Button(self.new_provider_window, text="Submit", command=self.add_new_provider).grid(row=3, column=1)
 
     def add_new_provider(self):
+        # Get the values from the entries and insert into the database
         name = self.provider_name_entry.get()
         specialty = self.provider_specialty_entry.get()
         contact_info = self.provider_contact_entry.get()
 
-        insert_query = "INSERT INTO provider (name, specialty, contact_info) VALUES (%s, %s, %s)"
-        self.db_manager.execute_query(insert_query, (name, specialty, contact_info))
+        if not all([name, specialty, contact_info]):  # Simple validation to ensure all fields are filled
+            messagebox.showerror("Error", "All fields are required.")
+            return
 
-        self.new_provider_window.destroy()
-        messagebox.showinfo("Success", "New provider added successfully.")
+        insert_query = "INSERT INTO provider (name, specialty, contact_info) VALUES (%s, %s, %s)"
+        try:
+            self.db_manager.execute_query(insert_query, (name, specialty, contact_info))
+            messagebox.showinfo("Success", "New provider added successfully.")
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred: {e}")
+        finally:
+            self.new_provider_window.destroy()  # Ensure the window is destroyed even if there's an error
 
     # Add new appointment form
     def add_new_appointment_form(self):
