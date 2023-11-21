@@ -1,7 +1,3 @@
-Certainly! Below is a template for a README file that you can use as a starting point. It provides a brief introduction to your application, installation instructions, usage details, and a description of the functionality.
-
----
-
 # MediConnect Database Interface
 
 MediConnect is a user-friendly desktop application designed to manage healthcare-related data seamlessly. It utilizes a MySQL backend to store and retrieve patient, provider, appointment, treatment, and billing information effectively.
