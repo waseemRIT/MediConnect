@@ -179,7 +179,77 @@ class MediConnectApp:
         Button(button_frame, text="Add New Billing Record", command=self.add_new_billing_record).pack(side="left",
                                                                                                       padx=5)
 
+    # Define the view functions to execute the SELECT statements and display the results
+    def view_all_patients(self):
+        self.execute_and_display_query("SELECT * FROM patient")
 
+    def view_all_providers(self):
+        self.execute_and_display_query("SELECT * FROM provider")
+
+    def view_all_appointments(self):
+        self.execute_and_display_query("SELECT * FROM appointment")
+
+    def view_all_treatments(self):
+        self.execute_and_display_query("SELECT * FROM treatment")
+
+    def view_all_billing_records(self):
+        self.execute_and_display_query("SELECT * FROM billing_record")
+
+    # Define methods for adding new records
+    def add_new_patient_form(self):
+        # This function will create a new window asking for the details of the new patient
+        self.new_patient_window = tk.Toplevel(self.master)
+        self.new_patient_window.title("Add New Patient")
+
+        Label(self.new_patient_window, text="Name:").grid(row=0, column=0)
+        self.patient_name_entry = Entry(self.new_patient_window)
+        self.patient_name_entry.grid(row=0, column=1)
+
+        Label(self.new_patient_window, text="Birthdate (YYYY-MM-DD):").grid(row=1, column=0)
+        self.patient_birthdate_entry = Entry(self.new_patient_window)
+        self.patient_birthdate_entry.grid(row=1, column=1)
+
+        Label(self.new_patient_window, text="Contact Info:").grid(row=2, column=0)
+        self.patient_contact_entry = Entry(self.new_patient_window)
+        self.patient_contact_entry.grid(row=2, column=1)
+
+        Button(self.new_patient_window, text="Submit", command=self.add_new_patient).grid(row=3, column=1)
+
+    def add_new_patient(self):
+        name = self.patient_name_entry.get()
+        birthdate = self.patient_birthdate_entry.get()
+        contact_info = self.patient_contact_entry.get()
+
+        # Implement input validation here as necessary
+        insert_query = "INSERT INTO patient (name, birthdate, contact_info) VALUES (%s, %s, %s)"
+        self.db_manager.execute_query(insert_query, (name, birthdate, contact_info))
+
+        # Close the add new patient form
+        self.new_patient_window.destroy()
+
+        messagebox.showinfo("Success", "New patient added successfully.")
+
+    def add_new_provider(self):
+        messagebox.showinfo("Info", "Add new provider functionality not implemented.")
+
+    def add_new_appointment(self):
+        messagebox.showinfo("Info", "Add new appointment functionality not implemented.")
+
+    def add_new_treatment(self):
+        messagebox.showinfo("Info", "Add new treatment functionality not implemented.")
+
+    def add_new_billing_record(self):
+        messagebox.showinfo("Info", "Add new billing record functionality not implemented.")
+
+    # Utility function to execute a query and display the results in the scrolled text area
+    def execute_and_display_query(self, query):
+        try:
+            records = self.db_manager.execute_query(query)
+            self.query_result.delete('1.0', tk.END)
+            for record in records:
+                self.query_result.insert(tk.END, f"{record}\n")
+        except Exception as e:
+            messagebox.showerror("Error", f"An error occurred while executing the query: {e}")
 
 
 
